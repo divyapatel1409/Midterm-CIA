@@ -2,7 +2,6 @@
 include 'dbinit.php';
 
 $accessoryName = $accessoryDescription = $genderCategory = $quantityAvailable = $price = $brand = $color = $imagePath = "";
-$productAddedBy = "Divyangini"; // Hardcoded value for 'Product Added By'
 $update = isset($_POST['update']);
 $errors = [];
 
@@ -89,9 +88,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if there are no errors before saving/updating
     if (empty($errors)) {
         if (isset($_POST['save'])) {
-            $sql_query = "INSERT INTO hair_accessories (AccessoryName, AccessoryDescription, GenderCategory, QuantityAvailable, Price, Brand, Color, ProductAddedBy, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql_query = "INSERT INTO hair_accessories (AccessoryName, AccessoryDescription, GenderCategory, QuantityAvailable, Price, Brand, Color, ImagePath) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql_query);
-            $stmt->bind_param("sssidssss", $accessoryName, $accessoryDescription, $genderCategory, $quantityAvailable, $price, $brand, $color, $productAddedBy, $imagePath);
+            $stmt->bind_param("sssidssss", $accessoryName, $accessoryDescription, $genderCategory, $quantityAvailable, $price, $brand, $color, $imagePath);
             if ($stmt->execute()) {
                 header('Location: index.php');
                 exit(); // Important to stop further execution
@@ -235,12 +234,6 @@ if (isset($_GET['edit'])) {
             <?php if ($update && $imagePath): ?>
                 <img src="<?php echo $imagePath; ?>" alt="Current Image" class="img-fluid mt-2" width="100">
             <?php endif; ?>
-        </div>
-
-        <!-- Product Added By (Hardcoded) -->
-        <div class="mb-3">
-            <label for="ProductAddedBy" class="form-label">Product Added By:</label>
-            <input type="text" class="form-control" value="<?php echo $productAddedBy; ?>" disabled>
         </div>
 
         <!-- Submit Button -->
