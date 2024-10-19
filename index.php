@@ -87,6 +87,52 @@ include 'dbinit.php';
             ]
         });
     });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        document.querySelectorAll('.btn-delete').forEach(function(button) {
+            button.addEventListener('click', function() {
+                var id = this.getAttribute('data-id');
+
+                Swal.fire({
+                    title: 'Are you sure?',
+                    text: "You won't be able to revert this!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        deleteItem(id);
+                    }
+                });
+            });
+        });
+    });
+
+    function deleteItem(id) {
+        $.ajax({
+            url: 'manage-toy.php',
+            type: 'POST',
+            data: { delete_id: id },
+            success: function(response) {
+                Swal.fire(
+                    'Deleted!',
+                    'The toy has been deleted.',
+                    'success'
+                ).then(() => {
+                    location.reload();
+                });
+            },
+            error: function() {
+                Swal.fire(
+                    'Error!',
+                    'There was an issue deleting the toy.',
+                    'error'
+                );
+            }
+        });
+    }
 </script>
 </body>
 </html>

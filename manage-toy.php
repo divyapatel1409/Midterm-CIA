@@ -105,11 +105,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Error: " . $stmt->error;
             }
         }
+
+        if ($update) {
+            $toyId = $_POST['id'];
+            $stmt = $conn->prepare("UPDATE toys SET ToyName=?, Description=?, Price=?, Stock=?, Brand=?, Color=?, AgeGroup=?, Material=?, Image=? WHERE Id=?");
+            $stmt->bind_param("ssdisssssi", $toyName, $description, $price, $stock, $brand, $color, $ageGroup, $material, $image, $toyId);
+            if ($stmt->execute()) {
+                header('Location: index.php');
+                exit(); // Important to stop further execution
+            } else {
+                echo "Error: " . $stmt->error;
+            }
+        }
     }
 }
 
 
+// Delete toy
+if (isset($_POST['delete_id'])) {
+    $toyId = $_POST['delete_id'];
+    $stmt = $conn->prepare("DELETE FROM toys WHERE Id=?");
+    $stmt->bind_param("i", $toyId);
+    if ($stmt->execute()) {
+        echo json_encode(['success' => true, 'message' => 'Toy deleted successfully.']);
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Error deleting toy: ' . $stmt->error]);
+    }
+    exit();
+}
 
+// Edit toy
+if (isset($_GET['edit'])) {
+    $toyId = $_GET['edit'];
+    $update = true;
+    $result = $conn->query("SELECT * FROM toys WHERE Id=$toyId");
+    $row = $result->fetch_array();
+    $toyName = $row['ToyName'];
+    $description = $row['Description'];
+    $price = $row['Price'];
+    $stock = $row['Stock'];
+    $brand = $row['Brand'];
+    $color = $row['Color'];
+    $ageGroup = $row['AgeGroup'];
+    $material = $row['Material'];
+    $image = $row['Image'];
+}
 ?>
 
 <!DOCTYPE html>
