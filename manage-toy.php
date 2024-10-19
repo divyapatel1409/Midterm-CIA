@@ -1,5 +1,18 @@
 <?php
 include 'dbinit.php';
+session_start();
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: account.php");
+    exit();
+}
+
+// Logout functionality
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: account.php");
+    exit();
+}
 
 $toyName = $description = $price = $stock = $brand = $color = $ageGroup = $material = $image = "";
 $update = isset($_POST['update']);
@@ -159,14 +172,25 @@ if (isset($_GET['edit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $update ? "Update Toy" : "Add New Toy"; ?> - Toy Management System</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        .form-label {
-            font-weight: bold;
-        }
-    </style>
 </head>
 <body class="bg-light">
+<div class="user-info">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($_SESSION['user_name'], 0, 1)); ?>
+                </div>
+                <h4>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h4>
+            </div>
+            <a href="<?php echo basename($_SERVER['PHP_SELF']); ?>?logout=1" class="btn logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">

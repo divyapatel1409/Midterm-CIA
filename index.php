@@ -1,5 +1,19 @@
 <?php
 include 'dbinit.php';
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['user_id'])) {
+    header("Location: account.php");
+    exit();
+}
+
+// Logout functionality
+if (isset($_GET['logout'])) {
+    session_destroy();
+    header("Location: account.php");
+    exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -11,20 +25,25 @@ include 'dbinit.php';
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="style.css?v=<?php echo time(); ?>">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        .dataTables_wrapper .dataTables_length, .dataTables_wrapper .dataTables_filter {
-            margin-bottom: 15px;
-        }
-        .toy-image {
-            width: 50px;
-            height: 50px;
-            object-fit: cover;
-            border-radius: 5px;
-        }
-    </style>
 </head>
 <body class="bg-light">
+<div class="user-info">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div class="d-flex align-items-center">
+                <div class="user-avatar">
+                    <?php echo strtoupper(substr($_SESSION['user_name'], 0, 1)); ?>
+                </div>
+                <h4>Welcome, <?php echo htmlspecialchars($_SESSION['user_name']); ?>!</h4>
+            </div>
+            <a href="<?php echo basename($_SERVER['PHP_SELF']); ?>?logout=1" class="btn logout-btn">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </a>
+        </div>
+    </div>
+</div>
 <div class="container mt-5">
     <div class="card shadow">
         <div class="card-header bg-primary text-white">
